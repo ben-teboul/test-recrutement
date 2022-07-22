@@ -3,7 +3,7 @@
 {% block body %}
     <h1>Application de test</h1>
     <p>Bienvenue sur ce test de recrutement.</p>
-    <p>Ce test est conçu pour durer environ 1h. Cependant à vous de décider le moment auquel vous vous arrêtez.</p>
+    <p>Ce test est conçu pour durer environ 1h. Cependant à vous de décider le moment auquel vous vous arrêtez, il n'y a pas de limite haute.</p>
 
     <h2>1. Tri de données</h2>
     <section class="container-fluid">
@@ -77,6 +77,10 @@
             Bravo, vous êtes arrivé au bout des différents exercices. Il vous faut désormais nous transmettre votre code,
             en créant un patch git à partir de la commande suivante: <code>git diff master > recrutement.patch</code>.
             Transmettez nous ensuite ce fichier par mail afin que nous puissions étudier les résultats.
+        </p>
+        <p>
+            Si vous avez créé de nouveaux fichiers pendant ce test, pensez à les ajouter à l'index git avant de créer le patch,
+            sinon ils n'y apparaitront pas.
         </p>
     </section>
 {% endblock %}
