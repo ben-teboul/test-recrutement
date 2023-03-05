@@ -24,6 +24,19 @@ final class DepartmentController extends AbstractController
         RouterInterface $router,
         TranslatorInterface $translator
     ) : Response {
+
+        $response = new Response();
+        $response
+            ->setLastModified($departmentRepository->getLastModified())
+            ->setPublic()
+            ->setMaxAge(0)
+        ;
+        $response->headers->addCacheControlDirective('no-cache');
+
+        if ($response->isNotModified($request)) {
+            return $response;
+        }
+
         try {
             $department = $departmentRepository->findOneByCode($request->get('code'));
             $cities = $cityRepository->fetchByDepartmentId($department->getId());
@@ -64,6 +77,6 @@ final class DepartmentController extends AbstractController
             'url' => $departmentUrl
         ];
 
-        return $this->render('department.html.twig', $viewParameters);
+        return $this->render('department.html.twig', $viewParameters, $response);
     }
 }
