@@ -73,4 +73,19 @@ final class DepartmentRepository
     {
         return $this->lastModified;
     }
+
+    public function findAllByName() :array
+    {
+        $dataByCode = $this->dataByCode;
+        $datas = array_column($dataByCode, null, 'name');
+        ksort($datas);
+        array_walk($datas, function (&$item) {
+            $department = new Department();
+            $department->setId($item['id']);
+            $department->setCode($item['code']);
+            $department->setName($item['name']);
+            $item = $department;
+        });
+        return $datas;
+    }
 }
