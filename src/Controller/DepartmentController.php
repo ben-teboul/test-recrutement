@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Repository\CityRepository;
+use App\Repository\CityRepositoryInterface;
 use App\Repository\DepartmentRepository;
 use App\Repository\Exception\DepartmentNotFound;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +19,7 @@ final class DepartmentController extends AbstractController
     public function __invoke(
         Request $request,
         DepartmentRepository $departmentRepository,
-        CityRepository $cityRepository,
+        CityRepositoryInterface $cityRepository,
         SluggerInterface $slugger,
         RouterInterface $router,
         TranslatorInterface $translator

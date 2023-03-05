@@ -3,8 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\City;
+use Exception;
 
-final class CitySQLiteRepository
+final class CitySQLiteRepository implements CityRepositoryInterface
 {
     private \SQLite3 $sqlite;
 
@@ -15,14 +16,14 @@ final class CitySQLiteRepository
         $this->sqlite->enableExceptions(true);
     }
 
-    public function findCitiesByDepartmentId(int $departmentId): array
+    public function fetchByDepartmentId(int $departmentId): array
     {
         $stmt = $this->sqlite->prepare('SELECT * FROM main.cities WHERE department_id=:id');
         $stmt->bindValue(':id', $departmentId, SQLITE3_INTEGER);
         $cities = $stmt->execute();
 
         $result = [];
-        while($row = $cities->fetchArray()) {
+        while ($row = $cities->fetchArray()) {
             $city = new City();
             $city->setName($row['name']);
             $city->setId($row['id']);
@@ -34,19 +35,30 @@ final class CitySQLiteRepository
 
     /**
      * @param City[] $cities
+     * @throws Exception
      */
     public function saveCities(\Traversable $cities)
     {
-        $stmt = $this->sqlite->prepare(
-            'INSERT INTO main.cities (id, department_id, slug, name) VALUES (:id, :department_id, :slug, :name)'
-        );
-        foreach ($cities as $city) {
-            $stmt->bindValue(':id', $city->getId(), SQLITE3_INTEGER);
-            $stmt->bindValue(':department_id', $city->getDepartmentId(), SQLITE3_INTEGER);
-            $stmt->bindValue(':slug', $city->getSlug(), SQLITE3_TEXT);
-            $stmt->bindValue(':name', $city->getName(), SQLITE3_TEXT);
+        // Démarre une transaction
+        $this->sqlite->exec('BEGIN');
+        try {
+            $stmt = $this->sqlite->prepare(
+                'INSERT INTO main.cities (id, department_id, slug, name) VALUES (:id, :department_id, :slug, :name)'
+            );
+            foreach ($cities as $city) {
+                $stmt->bindValue(':id', $city->getId(), SQLITE3_INTEGER);
+                $stmt->bindValue(':department_id', $city->getDepartmentId(), SQLITE3_INTEGER);
+                $stmt->bindValue(':slug', $city->getSlug(), SQLITE3_TEXT);
+                $stmt->bindValue(':name', $city->getName(), SQLITE3_TEXT);
 
-            $stmt->execute();
+                $stmt->execute();
+            }
+            //Valide la transaction
+            $this->sqlite->exec('COMMIT');
+        } catch (Exception $e) {
+            // Annule la transaction en cas d'erreur
+            $this->sqlite->exec('ROLLBACK');
+            throw $e;
         }
     }
 

@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use App\Entity\City;
 
-final class CityRepository
+final class CityRepository implements CityRepositoryInterface
 {
     private array $dataByDepartmentId = [];
 
