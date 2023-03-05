@@ -17,4 +17,23 @@ code : {{department.getCode()}}
 <br>
 url : {{ url }}
 <br>
+
+<h1>{{'departments.cities.heading'|trans({'%numberOfCities%': cities|length})|capitalize}}</h1>
+<br>
+<table class="table">
+    <tr>
+        <th>Id</th>
+        <th>Nom</th>
+    </tr>
+    {% for city in cities %}
+        <tr>
+            <td>{{city.getId()}}</td>
+            <td>{{city.getName()}}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td class="text-center" colspan="2">{{'departments.cities.noCities'|trans}}</td>
+        </tr>
+    {% endfor %}
+</table>
 {% endblock %}

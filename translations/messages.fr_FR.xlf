@@ -21,6 +21,14 @@
         <source>departments.heading</source>
         <target>liste des départements</target>
       </trans-unit>
+      <trans-unit id="B5e.RWa" resname="departments.cities.heading">
+         <source>departments.cities.heading (%numberOfCities%)</source>
+         <target>liste des villes (%numberOfCities%)</target>
+      </trans-unit>
+      <trans-unit id=".8SaUJw" resname="departments.cities.noCities">
+          <source>departments.cities.noCities</source>
+          <target>aucune ville pour ce département</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

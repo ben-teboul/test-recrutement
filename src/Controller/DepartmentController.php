@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\CityRepository;
 use App\Repository\DepartmentRepository;
 use App\Repository\Exception\DepartmentNotFound;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,12 +19,18 @@ final class DepartmentController extends AbstractController
     public function __invoke(
         Request $request,
         DepartmentRepository $departmentRepository,
+        CityRepository $cityRepository,
         SluggerInterface $slugger,
         RouterInterface $router,
         TranslatorInterface $translator
     ) : Response {
         try {
             $department = $departmentRepository->findOneByCode($request->get('code'));
+            $cities = $cityRepository->fetchByDepartmentId($department->getId());
+            //Tri des villes par noms
+            usort($cities, function ($a, $b) {
+                return strcmp($a->getName(), $b->getName());
+            });
         } catch (DepartmentNotFound $e) {
             throw new NotFoundHttpException();
         }
@@ -49,6 +56,7 @@ final class DepartmentController extends AbstractController
 
         $viewParameters = [
             'department' => $department,
+            'cities' => $cities,
             'description' => $translator->trans(
                 'department.description %deparmentLabel%',
                 ['%deparmentLabel%' => $department->getName()]
