@@ -57,24 +57,17 @@ class Kernel extends BaseKernel
                 if ($i === $loser) {
                     continue 2;
                 }
-                foreach ($winners as $winner) {
-                    if ($i === $winner) {
-                        continue 3;
-                    }
+            }
+            foreach ($winners as $winner) {
+                if ($i === $winner) {
+                    continue 2;
                 }
             }
             $winners[] = $i;
         } while (count($winners) < 200 && $i < 1000);
-
         // Shuffle the array
-        usort(
-            $winners,
-            function($a, $b) {
-                return (mt_rand(0, 1) === 0 ? -1 : 1);
-            }
-        );
+        shuffle($winners);
         $winners = array_slice($winners, 0, 20);
-
         return new JsonResponse(['winners' => $winners]);
     }
 }
